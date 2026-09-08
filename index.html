@@ -195,12 +195,62 @@
       <div class="card">
         <h2>💡 생각 열기</h2>
 
-        <div class="comicPlaceholder">
-          <img
-            src="comic.png"
-            style="width: 100%; height: 100%; object-fit: contain"
-          />
-        </div>
+<div class="comicPlaceholder">
+
+  <img
+    id="comicImage"
+    src="comic.png"<
+    onclick="openImage()"
+    style="
+      width:100%;
+      height:100%;
+      object-fit:contain;
+      cursor:pointer;
+    "
+  />
+
+</div>
+        <div
+style="
+background:#fef9c3;
+padding:10px;
+border-radius:8px;
+text-align:center;
+margin-top:10px;
+font-size:14px;
+">
+
+💡 문제 상황을 잘 살펴본 후
+초기 상태와 목표 상태를 작성해 보세요.
+<br>
+🔍 만화를 클릭하면 크게 볼 수 있습니다.
+
+</div>
+     <div class="comicPlaceholder">
+  <img
+    id="comicImage"
+    src="comic.png"
+    onclick="openImage()"
+    style="
+      width:100%;
+      height:100%;
+      object-fit:contain;
+      cursor:pointer;
+    "
+  />
+</div>
+
+<p
+style="
+text-align:center;
+font-size:14px;
+color:#666;
+margin-top:8px;
+">
+
+🔍 만화를 클릭하면 크게 볼 수 있습니다.
+
+</p>   
       </div>
       <div class="card">
         <h2>1. 추상화하기</h2>
@@ -826,6 +876,64 @@
 
         pdf.save(fileName);
       }
+      function openImage(){
+
+    document
+    .getElementById("imageModal")
+    .style.display = "block";
+
+}
+
+function closeImage(){
+
+    document
+    .getElementById("imageModal")
+    .style.display = "none";
+
+}
+
     </script>
+    <div
+id="imageModal"
+style="
+display:none;
+position:fixed;
+left:0;
+top:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,.85);
+z-index:9999;
+">
+
+<span
+onclick="closeImage()"
+style="
+position:absolute;
+right:30px;
+top:20px;
+font-size:50px;
+color:white;
+cursor:pointer;
+">
+&times;
+</span>
+
+<img
+id="modalImage"
+src="comic.png"
+style="
+max-width:90%;
+max-height:90%;
+position:absolute;
+left:50%;
+top:50%;
+transform:translate(-50%,-50%);
+border-radius:10px;
+box-shadow:0 0 20px white;
+">
+
+</div>
+
   </body>
 </html>
