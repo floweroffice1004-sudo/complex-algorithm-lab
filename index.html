@@ -1,0 +1,831 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>복잡한 알고리즘 디지털 실험실</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background: #eef3f8;
+        margin: 0;
+      }
+
+      .hero {
+        background: linear-gradient(135deg, #0f766e, #22c55e);
+        color: white;
+        padding: 25px;
+        text-align: center;
+      }
+
+      .wrap {
+        max-width: 1200px;
+        margin: auto;
+        padding: 20px;
+      }
+
+      .card {
+        background: #fff;
+        border-radius: 16px;
+        padding: 18px;
+        margin: 18px 0;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .pool,
+      .drop {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        min-height: 70px;
+      }
+
+      .block {
+        background: #dbeafe;
+        padding: 10px 14px;
+        border-radius: 10px;
+        cursor: grab;
+      }
+
+      .drop {
+        border: 2px dashed #94a3b8;
+        padding: 10px;
+      }
+
+      .btn {
+        background: #2563eb;
+        color: #fff;
+        border: 0;
+        padding: 10px 15px;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+
+      .flow {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      .node {
+        padding: 10px;
+        border-radius: 10px;
+        background: #e5e7eb;
+      }
+
+      .on {
+        background: #22c55e;
+        color: #fff;
+      }
+
+      .sim {
+        height: 300px;
+
+        position: relative;
+
+        border: 1px solid #ccc;
+
+        border-radius: 10px;
+
+        overflow: hidden;
+
+        background: #f8fafc;
+      }
+      .item {
+        position: absolute;
+
+        left: 10px;
+
+        top: 180px;
+
+        font-size: 55px;
+
+        transition: all 1.5s ease;
+      }
+
+      .machine {
+        position: absolute;
+        left: 45%;
+        top: 60px;
+      }
+      .machine-box {
+        width: 400px;
+
+        margin: auto;
+
+        background: linear-gradient(180deg, #475569, #1e293b);
+
+        border-radius: 20px;
+
+        padding: 20px;
+
+        color: white;
+
+        border: 4px solid #0f172a;
+
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.35);
+      }
+
+      .machine-title {
+        font-size: 24px;
+
+        font-weight: bold;
+
+        margin-bottom: 15px;
+      }
+
+      .lcd {
+        height: 90px;
+
+        background: #9efcaa;
+
+        border: 3px inset #65a30d;
+
+        color: #111;
+
+        font-weight: bold;
+
+        font-size: 20px;
+
+        padding: 15px;
+      }
+      .slot {
+        width: 180px;
+
+        height: 18px;
+
+        background: black;
+
+        margin: auto;
+
+        border-radius: 20px;
+      }
+
+      .bin {
+        position: absolute;
+        right: 20px;
+        top: 40px;
+      }
+
+      .field {
+        width: 100%;
+        margin: 6px 0;
+        padding: 8px;
+      }
+      .comicPlaceholder {
+        height: 250px;
+        border: 2px dashed #94a3b8;
+        border-radius: 12px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: #f8fafc;
+        margin-bottom: 15px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="hero">
+      <h1>♻️ 포인트 적립 자동 재활용 시스템 실험실</h1>
+    </div>
+    <div class="wrap">
+      <div class="card">
+        <h2>💡 생각 열기</h2>
+
+        <div class="comicPlaceholder">
+          <img
+            src="comic.png"
+            style="width: 100%; height: 100%; object-fit: contain"
+          />
+        </div>
+      </div>
+      <div class="card">
+        <h2>1. 추상화하기</h2>
+        <div
+          style="
+            background: #dbeafe;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 10px;
+          "
+        >
+          💡초기 상태와 목표 상태를 비교하여 자동 재활용 시스템이 어떻게 문제를
+          해결하는지 생각해 봅시다. 그리고 초기상태와 비교한 목표상태와 문제
+          해결에 필요한 핵심요소를 작성합니다.
+        </div>
+        <textarea id="goal" class="field" placeholder="목표 상태"></textarea>
+        <textarea id="key" class="field" placeholder="핵심 요소"></textarea>
+        <h3>구조화</h3>
+
+        <p>기능별로 나누어진 알고리즘을 정리해 봅시다.</p>
+
+        <table
+          style="
+            width: 100%;
+            border-collapse: collapse;
+            text-align: center;
+            margin-top: 10px;
+          "
+        >
+          <tr>
+            <th style="border: 1px solid #ccc; padding: 10px">
+              재활용품 분류기능
+            </th>
+
+            <th style="border: 1px solid #ccc; padding: 10px">
+              포인트 생성기능
+            </th>
+
+            <th style="border: 1px solid #ccc; padding: 10px">
+              포인트 처리기능
+            </th>
+          </tr>
+
+          <tr>
+            <td style="border: 1px solid #ccc; padding: 15px">
+              <input class="field" placeholder="예: 캔, 플라스틱 분류" />
+            </td>
+
+            <td style="border: 1px solid #ccc; padding: 15px">
+              <input
+                class="field"
+                placeholder="예: 분류된 물품에 따른 포인트 생성"
+              />
+            </td>
+
+            <td style="border: 1px solid #ccc; padding: 15px">
+              <input class="field" placeholder="예: 기부 또는 적립 선택" />
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div class="card">
+        <h2>2. 전체 알고리즘 과정 설계</h2>
+        <p>블록을 클릭하면 아래 보드에 추가됩니다.</p>
+        <div class="pool">
+          <div class="block" onclick="add(this)">시작</div>
+
+          <div class="block" onclick="add(this)">
+            캔과 플라스틱 무작위로 투입
+          </div>
+
+          <div class="block" onclick="add(this)">재활용품 분류</div>
+
+          <div class="block" onclick="add(this)">포인트 생성</div>
+
+          <div class="block" onclick="add(this)">포인트 처리</div>
+
+          <div class="block" onclick="add(this)">종료</div>
+        </div>
+        <h3>알고리즘 보드</h3>
+        <div id="drop" class="drop"></div>
+        <br /><button class="btn" onclick="runAlgo()">알고리즘 실행</button>
+        <button class="btn" style="background: #16a34a" onclick="showAnswer()">
+          📖 전체 정답 보기
+        </button>
+
+        <button
+          class="btn"
+          style="background: #f59e0b"
+          onclick="showFunctionAnswer()"
+        >
+          📝 기능별 정답 보기
+        </button>
+        <button class="btn" style="background: #ef4444" onclick="resetAlgo()">
+          🔄 알고리즘 초기화
+        </button>
+
+        <button class="btn" onclick="openSim()">실험실 열기</button>
+        <div id="msg"></div>
+      </div>
+      <div class="card">
+        <h2>3. 시뮬레이션</h2>
+        <div class="flow">
+          <div id="n1" class="node">분류</div>
+          <div id="n2" class="node">포인트</div>
+          <div id="n3" class="node">처리</div>
+        </div>
+        <br />
+        <div class="sim">
+          <div id="item" class="item">🥫</div>
+          <div class="machine-box">
+            <div class="machine-title">♻️ 포인트 적립기</div>
+
+            <div>
+              적립 :
+              <span id="savePoint"> 0P </span>
+            </div>
+
+            <br />
+
+            <div>
+              기부 :
+              <span id="donatePoint"> 0P </span>
+            </div>
+
+            <br />
+
+            <div id="lcd" class="lcd">재활용품을 넣어주세요</div>
+
+            <div class="slot"></div>
+          </div>
+          <div class="bin" id="bin">♻️</div>
+        </div>
+        <br /><button class="btn" onclick="simulate('can')">🥫 캔 투입</button
+        ><button class="btn" onclick="simulate('plastic')">
+          🧴 플라스틱 투입
+        </button>
+        <button
+          class="btn"
+          style="background: #ef4444; font-weight: bold"
+          onclick="resetMachine()"
+        >
+          🔄 전체 초기화
+        </button>
+        <p id="result"></p>
+      </div>
+
+      <div class="card">
+        <h2>4. 세부 알고리즘 작성</h2>
+        <input id="ban" class="field" placeholder="반" /><input
+          id="num"
+          class="field"
+          placeholder="번호"
+        /><input id="name" class="field" placeholder="이름" /><select
+          id="func"
+          class="field"
+        >
+          <option>재활용품 분류</option>
+          <option>포인트 생성</option>
+          <option>포인트 처리</option></select
+        ><textarea
+          id="algoDetail"
+          class="field"
+          placeholder="선택한 기능의 세부 알고리즘 작성"
+        >
+        </textarea>
+      </div>
+      <div class="card">
+        <h2>5. 프로그래밍 및 디버깅</h2>
+        <label> - 오류 발생 </label>
+        <div
+          style="
+            background: #fef3c7;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 5px;
+            font-size: 14px;
+          "
+        >
+            작성 TIP) 오류가 발생한 부분을 작성해주세요.  
+        </div>
+        <textarea
+          id="error"
+          class="field"
+          placeholder="예: 포인트가 잘못 계산되었다"
+        ></textarea>
+
+        <label> - 해결 과정 </label>
+
+        <div
+          style="
+            background: #dbeafe;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 5px;
+            font-size: 14px;
+          "
+        >
+          작성 TIP) 오류 발생을 해결한 과정을 적어주세요. 만약 해결하지 못했다면
+          해결을 시도한 과정을 적어주세요.
+        </div>
+
+        <textarea
+          id="fix"
+          class="field"
+          placeholder="예: 조건문을 수정하였다"
+        ></textarea>
+      </div>
+
+      <div class="card">
+        <h2>6. 수행평가 체크리스트</h2>
+        <h3>
+          📋 본인이 완료한 부분에 체크 표시를 해보자 (★수행평가 점수 기준!★)
+        </h3>
+
+        <div
+          style="
+            background: #f8fafc;
+            padding: 15px;
+            border-radius: 10px;
+            line-height: 2.2;
+          "
+        >
+          <label>
+            <input type="checkbox" />
+            초기상태에 따른 목표상태를 작성하였는가
+          </label>
+
+          <br />
+
+          <label>
+            <input type="checkbox" />
+            문제 해결에 필요한 핵심 요소를 2가지 이상 작성하였는가
+          </label>
+
+          <br />
+
+          <label>
+            <input type="checkbox" />
+            해결하는데 필요한 알고리즘을 순서에 맞게 제시하였는가
+          </label>
+
+          <br />
+
+          <label>
+            <input type="checkbox" />
+            알고리즘에 모든 핵심 과정이 포함되어 있는가
+          </label>
+
+          <br />
+
+          <label>
+            <input type="checkbox" />
+            개발 중 오류가 발생한 부분과 해결 과정을 작성하였는가
+          </label>
+        </div>
+
+        <br />
+        <button class="btn" onclick="saveDraft()">💾 중간 저장</button>
+
+        <button class="btn" onclick="loadDraft()">📂 불러오기</button>
+
+        <br /><br />
+
+        <button class="btn" onclick="savePDF()">PDF 저장</button>
+      </div>
+    </div>
+    <script>
+      let savePoint = 0;
+      let donatePoint = 0;
+      let history = [];
+      function add(el) {
+        let box = document.createElement("div");
+
+        box.className = "block";
+
+        box.style.display = "flex";
+        box.style.alignItems = "center";
+        box.style.gap = "8px";
+
+        box.innerHTML = `
+              <span>${el.textContent}</span>
+              <button onclick="removeBlock(this)"
+              style="
+                  background:#ef4444;
+                  color:white;
+                  border:none;
+                  border-radius:50%;
+                  width:24px;
+                  height:24px;
+                  cursor:pointer;
+                  font-weight:bold;
+              ">
+              ×
+              </button>
+          `;
+        document.getElementById("drop").appendChild(box);
+      }
+      function removeBlock(btn) {
+        btn.parentElement.remove();
+      }
+      function runAlgo() {
+        let t = [...document.querySelectorAll("#drop .block span")].map((x) =>
+          x.textContent.trim(),
+        );
+        let correct = [
+          "시작",
+          "캔과 플라스틱 무작위로 투입",
+          "재활용품 분류",
+          "포인트 생성",
+          "포인트 처리",
+          "종료",
+        ];
+        document.getElementById("msg").innerHTML =
+          JSON.stringify(t) == JSON.stringify(correct)
+            ? "✅ 알고리즘 완성"
+            : "❌ 순서를 다시 확인";
+      }
+      function showAnswer() {
+        document.getElementById("msg").innerHTML = `
+
+      <h3>✅ 전체 알고리즘 정답</h3>
+
+      시작
+      <br>↓<br>
+
+      캔과 플라스틱 무작위로 투입
+      <br>↓<br>
+
+      재활용품 분류
+      <br>↓<br>
+
+      포인트 생성
+      <br>↓<br>
+
+      포인트 처리
+      <br>↓<br>
+
+      종료
+
+      `;
+      }
+      function showFunctionAnswer() {
+        document.getElementById("msg").innerHTML = `
+
+      <h3>♻️ 재활용품 분류</h3>
+
+      재활용품 분류 시작
+      <br>↓<br>
+
+      재활용품 종류가 캔인가?
+      <br>
+
+      예 → 캔으로 분리
+      <br>
+
+      아니오 → 플라스틱으로 분리
+      <br>
+
+      ↓<br>
+
+      재활용품 분류 종료
+
+      <hr>
+
+      <h3>💰 포인트 생성</h3>
+
+      포인트 생성 시작
+      <br>↓<br>
+
+      재활용품 종류가 캔인가?
+      <br>
+
+      예 → 포인트(10원) 생성
+      <br>
+
+      아니오 → 포인트(5원) 생성
+      <br>
+
+      ↓<br>
+
+      포인트 생성 종료
+
+      <hr>
+
+      <h3>🎁 포인트 처리</h3>
+
+      포인트 처리 시작
+      <br>↓<br>
+
+      포인트 적립을 할 것인가?
+      <br>
+
+      예 → 포인트 적립, 안내
+      <br>
+
+      아니오 → 포인트 기부, 안내
+      <br>
+
+      ↓<br>
+
+      포인트 처리 종료
+
+      `;
+      }
+
+      function resetAlgo() {
+        if (!confirm("작성한 알고리즘을 모두 삭제할까요?")) {
+          return;
+        }
+
+        document.getElementById("drop").innerHTML = "";
+
+        document.getElementById("msg").innerHTML = "";
+      }
+      function openSim() {
+        document.querySelector(".sim").scrollIntoView({ behavior: "smooth" });
+      }
+      function hi(id) {
+        ["n1", "n2", "n3"].forEach((x) =>
+          document.getElementById(x).classList.remove("on"),
+        );
+        document.getElementById(id).classList.add("on");
+      }
+      function simulate(type) {
+        const point = type === "can" ? 10 : 5;
+
+        const item = document.getElementById("item");
+
+        item.style.left = "10px";
+
+        item.textContent = type === "can" ? "🥫" : "🧴";
+
+        setTimeout(() => {
+          hi("n1");
+          item.style.left = "85%";
+        }, 500);
+
+        setTimeout(() => {
+          hi("n2");
+
+          document.getElementById("lcd").innerHTML =
+            type === "can"
+              ? "🥫 캔 인식 완료<br>10P 생성"
+              : "🧴 플라스틱 인식 완료<br>5P 생성";
+        }, 1500);
+        setTimeout(() => {
+          hi("n3");
+          processPoint(point);
+        }, 2500);
+      }
+      function processPoint(point) {
+        let choice = confirm(point + "포인트 생성!\n\n확인=적립\n취소=기부");
+
+        if (choice) {
+          savePoint += point;
+          history.push({
+            type: "save",
+            point: point,
+          });
+
+          document.getElementById("savePoint").textContent = savePoint + "P";
+          document.getElementById("result").innerHTML = "✅ 적립 완료";
+
+          document.getElementById("lcd").innerHTML =
+            "✅ 적립 선택<br>" + point + "P 적립 완료";
+        } else {
+          donatePoint += point;
+          history.push({
+            type: "donate",
+            point: point,
+          });
+
+          document.getElementById("donatePoint").textContent =
+            donatePoint + "P";
+          document.getElementById("result").innerHTML = "🌱 기부 완료";
+
+          document.getElementById("lcd").innerHTML =
+            "🌱 기부 선택<br>" + point + "P 기부 완료";
+        }
+      }
+      function undoLast() {
+        if (history.length === 0) {
+          alert("되돌릴 작업이 없습니다.");
+
+          return;
+        }
+
+        const last = history.pop();
+
+        if (last.type === "save") {
+          savePoint -= last.point;
+
+          document.getElementById("savePoint").textContent = savePoint + "P";
+        } else {
+          donatePoint -= last.point;
+
+          document.getElementById("donatePoint").textContent =
+            donatePoint + "P";
+        }
+
+        document.getElementById("lcd").innerHTML = "↩ 마지막 작업 취소";
+      }
+      function resetMachine() {
+        if (!confirm("모든 포인트와 진행상황을 초기화할까요?")) {
+          return;
+        }
+
+        savePoint = 0;
+        donatePoint = 0;
+
+        document.getElementById("savePoint").textContent = "0P";
+
+        document.getElementById("donatePoint").textContent = "0P";
+
+        document.getElementById("result").innerHTML = "";
+
+        document.getElementById("lcd").innerHTML = "재활용품을 넣어주세요";
+
+        const item = document.getElementById("item");
+
+        item.style.left = "10px";
+
+        item.textContent = "🥫";
+
+        ["n1", "n2", "n3"].forEach((id) => {
+          document.getElementById(id).classList.remove("on");
+        });
+      }
+
+      function saveDraft() {
+        const data = {
+          goal: document.getElementById("goal").value,
+
+          key: document.getElementById("key").value,
+
+          ban: document.getElementById("ban").value,
+
+          num: document.getElementById("num").value,
+
+          name: document.getElementById("name").value,
+
+          algoDetail: document.getElementById("algoDetail").value,
+
+          error: document.getElementById("error").value,
+
+          fix: document.getElementById("fix").value,
+        };
+
+        localStorage.setItem("recycleLab", JSON.stringify(data));
+
+        alert("💾 중간 저장 완료");
+      }
+
+      function loadDraft() {
+        const data = JSON.parse(localStorage.getItem("recycleLab"));
+
+        if (!data) {
+          alert("저장된 내용이 없습니다.");
+
+          return;
+        }
+
+        document.getElementById("goal").value = data.goal || "";
+
+        document.getElementById("key").value = data.key || "";
+
+        document.getElementById("ban").value = data.ban || "";
+
+        document.getElementById("num").value = data.num || "";
+
+        document.getElementById("name").value = data.name || "";
+
+        document.getElementById("algoDetail").value = data.algoDetail || "";
+
+        document.getElementById("error").value = data.error || "";
+
+        document.getElementById("fix").value = data.fix || "";
+
+        alert("📂 저장된 내용을 불러왔습니다.");
+      }
+      function savePDF() {
+        if (!window.jspdf) {
+          alert("PDF 라이브러리를 불러오지 못했습니다.");
+
+          return;
+        }
+
+        if (
+          document.getElementById("name").value.trim() === "" ||
+          document.getElementById("num").value.trim() === ""
+        ) {
+          alert("이름과 번호를 입력하세요.");
+
+          return;
+        }
+
+        const { jsPDF } = window.jspdf;
+
+        const pdf = new jsPDF();
+
+        pdf.text("복잡한 알고리즘 설계 및 표현 수행평가", 10, 10);
+
+        pdf.text("반 : " + document.getElementById("ban").value, 10, 20);
+
+        pdf.text("번호 : " + document.getElementById("num").value, 10, 30);
+
+        pdf.text("이름 : " + document.getElementById("name").value, 10, 40);
+
+        pdf.text(
+          "목표 상태 : " + document.getElementById("goal").value,
+          10,
+          60,
+        );
+
+        pdf.text("핵심 요소 : " + document.getElementById("key").value, 10, 80);
+
+        const fileName =
+          document.getElementById("num").value +
+          "_" +
+          document.getElementById("name").value +
+          "_복잡한알고리즘.pdf";
+
+        pdf.save(fileName);
+      }
+    </script>
+  </body>
+</html>
