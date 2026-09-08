@@ -314,18 +314,27 @@ font-size:14px;
 
           <tr>
             <td style="border: 1px solid #ccc; padding: 15px">
-            <textarea class="field" rows="3"></textarea>
+<textarea
+class="field"
+rows="3"
+placeholder="내용 입력">
+</textarea>
            </td>
 
             <td style="border: 1px solid #ccc; padding: 15px">
-              <input
-                class="field"
-                placeholder="예: 분류된 물품에 따른 포인트 생성"
-              />
+<textarea
+class="field"
+rows="3"
+placeholder="예: 분류된 물품에 따른 포인트 생성">
+</textarea>
             </td>
 
             <td style="border: 1px solid #ccc; padding: 15px">
-              <input class="field" placeholder="예: 기부 또는 적립 선택" />
+<textarea
+class="field"
+rows="3"
+placeholder="예: 기부 또는 적립 선택">
+</textarea>
             </td>
           </tr>
         </table>
@@ -447,6 +456,7 @@ margin-bottom:15px;
 형태의 조건문을 활용해 보세요.
 
 </div>
+        <select id="func" class="field">
           <option>재활용품 분류</option>
           <option>포인트 생성</option>
           <option>포인트 처리</option></select
@@ -664,44 +674,61 @@ margin-bottom:15px;
         btn.parentElement.remove();
       }
       function runAlgo() {
-        let t = [...document.querySelectorAll("#drop .block span")].map((x) =>
-          x.textContent.trim(),
-        );
-        let correct = [
-          "시작",
-          "캔과 플라스틱 무작위로 투입",
-          "재활용품 분류",
-          "포인트 생성",
-          "포인트 처리",
-          "종료",
-        ];
+
+    let t =
+    [...document.querySelectorAll("#drop .block span")]
+    .map(x => x.textContent.trim());
+
+    let correct = [
+        "시작",
+        "캔과 플라스틱 무작위로 투입",
+        "재활용품 분류",
+        "포인트 생성",
+        "포인트 처리",
+        "종료"
+    ];
+
+    if(
+       JSON.stringify(t) ===
+       JSON.stringify(correct)
+    ){
+
+        document.getElementById("msg").innerHTML = `
+
+        ✅ 알고리즘 완성
+
+        <br><br>
+
+        전체 시스템 알고리즘이 완성되었습니다.
+
+        하지만 실제 프로그램을 만들기 위해서는
+
+        ① 재활용품 분류
+
+        ② 포인트 생성
+
+        ③ 포인트 처리
+
+        기능별 알고리즘이 각각 필요합니다.
+
+        아래의 '세부 알고리즘 작성' 활동에서
+        세 가지 기능 중 하나를 선택해
+        의사코드로 작성해 봅시다.
+
+        `;
+
+    }
+
+    else{
+
         document.getElementById("msg").innerHTML =
-          JSON.stringify(t) == JSON.stringify(correct)
-            ? document.getElementById("msg").innerHTML =
 
-`
-✅ 알고리즘 완성
+        "❌ 순서를 다시 확인";
 
-<br><br>
+    }
 
-전체 시스템 알고리즘이 완성되었습니다.
+}
 
-하지만 실제 프로그램을 만들기 위해서는
-
-① 재활용품 분류
-
-② 포인트 생성
-
-③ 포인트 처리
-
-기능별 알고리즘이 각각 필요합니다.
-
-아래의 '세부 알고리즘 작성' 활동에서
-세 가지 기능 중 하나를 선택해
-의사코드로 작성해 봅시다.
-`;
-            : "❌ 순서를 다시 확인";
-      }
       function showAnswer() {
         document.getElementById("msg").innerHTML = `
 
